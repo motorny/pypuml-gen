@@ -1,0 +1,21 @@
+[project]
+name = "pypuml-gen"
+version = "0.1.0"
+description = "PUML generator from declarative python code"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[dependency-groups]
+dev = ["pre-commit"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pypuml_gen"]
+
+[tool.isort]
+known_first_party = "pypuml_gen"
