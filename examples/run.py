@@ -2,7 +2,8 @@ import random
 import string
 from typing import Callable
 
-from pypuml_gen.domain.condition_if import condition_if
+from pypuml_gen.domain.exporter import LinesExporter
+from pypuml_gen.domain.utilities import condition_if
 from pypuml_gen.domain.uml_collection import UmlCollection
 from pypuml_gen.domain.uml_link import UmlLink
 from pypuml_gen.domain.uml_state import (
@@ -13,73 +14,26 @@ from pypuml_gen.domain.uml_state import (
     UmlStateProto,
 )
 
-uml_colleciton = UmlCollection()
-
 condition1 = True
 condition2 = False
 
+uml_colleciton = UmlCollection()
+UmlStateC = uml_colleciton.assoc(UmlState)
+UmlLinkC = uml_colleciton.assoc(UmlLink)
 
-UmlStateC: Callable[..., UmlStateProto] = uml_colleciton.assoc(UmlState)
-UmlLinkC: type = uml_colleciton.assoc(UmlLink)
-UmlForkC: type = uml_colleciton.assoc(UmlFork)
-UmlJoinC: type = uml_colleciton.assoc(UmlJoin)
-UmlChoiceC = uml_colleciton.assoc(UmlChoice)
+a = UmlStateC(title="A")
+b = UmlStateC(title="BB")
+c = UmlStateC(title="CCC")
 
-a: UmlStateProto = UmlStateC(title="A", fqdn="a", style="#line:red;line.bold")
-b = UmlStateC(
-    title="B",
-    fqdn="b",
-)
+a.transition_to(b)
+c.transition_from(b)
 
 
-c = UmlStateC(
-    title="C",
-    fqdn="c",
-)
-
-d = UmlStateC(
-    title="D",
-    fqdn="d",
-)
-
-e = UmlStateC(
-    title="E",
-    fqdn="e",
-)
-
-f = UmlStateC(
-    title="F",
-    fqdn="f",
-)
-
-a.requires(b)
-c.implies(a)
-
-
-d.requires(e & f).requires(
-    condition_if(a, cond=condition1) | condition_if(b, cond=condition2)
-)
-
-join3 = UmlJoinC(fqdn="".join(random.choices(string.ascii_uppercase, k=5)))
-
-content = uml_colleciton.export_lines()
+exporter = LinesExporter()
+content = exporter.export(uml_colleciton)
 
 TPL = """@startuml example-diag
-note as N1
-    Some note
-end note
-
-note as N2
-    X - {X}
-    Y - {Y}
-end note
-
 {content}
-
-state choice_example <<choice>>
-note left of choice_example : "one of"
-state join_example <<join>>
-note left of join_example : "all"
 @enduml
 """
 

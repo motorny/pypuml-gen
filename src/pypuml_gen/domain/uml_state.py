@@ -1,5 +1,6 @@
 import random
 import string
+import dataclasses
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -44,7 +45,7 @@ class EmptyConditionalLink:
 
 @dataclass
 class UmlState(Umlable):
-    fqdn: str
+    fqdn: str = dataclasses.field(default_factory=lambda: "".join(random.choices(string.ascii_uppercase, k=5)))
     title: str | None = None
     is_join: bool = False
     style: str = ""
@@ -54,7 +55,7 @@ class UmlState(Umlable):
         style_part: str = (" " + self.style) if self.style else ""
         return "state " + title_part + self.fqdn + style_part
 
-    def requires(self, needed_state: "UmlState", cond: bool = None):
+    def transition_from(self, needed_state: "UmlState", cond: bool = None):
         if cond is not None:
             if not cond:
                 return self
@@ -85,7 +86,7 @@ class UmlState(Umlable):
         link = link_class(needed_state, self)
         return link
 
-    def implies(self, implied_state: "UmlState"):
+    def transition_to(self, implied_state: "UmlState"):
         """
         just like requires, but other direction
         """

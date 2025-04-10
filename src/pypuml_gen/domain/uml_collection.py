@@ -40,6 +40,5 @@ class UmlCollection:
         self.known_classes[floating_class.__name__] = new_uml_linked_class
         return new_uml_linked_class
 
-    def export_lines(self):
-        lines = [i.to_uml_lines() for i in self.umlable_items]
-        return "\n".join(lines)
+    def associated_items_iter(self):
+        return iter(self.umlable_items)
